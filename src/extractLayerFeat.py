@@ -18,8 +18,9 @@ def extractLayerFeat(idx_ls, scale_size=224):
         img_num = len(img_list)
         print('total number of images for idx {1}: {0}'.format(img_num, ii))
         
-        img_list = img_list[0:400]
+        img_list = img_list[0:3000]
         img_num = len(img_list)
+        print('used number of images for idx {1}: {0}'.format(img_num, ii))
         
         feat_set = [None for nn in range(img_num)]
         for nn in range(img_num):

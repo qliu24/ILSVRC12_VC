@@ -5,6 +5,9 @@ from datetime import datetime
 from copy import *
 from FeatureExtractor import FeatureExtractor
 
+subset_idx = 7
+img_per_subset = 200
+
 check_num = 2000  # save how many images to one file
 samp_size = 50  # number of features per image
 scale_size = 224
@@ -17,13 +20,19 @@ with open(Dict['file_list'], 'r') as fh:
 img_num = len(image_path)
 print('total images number : {0}'.format(img_num))
 
+subset_ls = np.concatenate([np.arange(nn*img_per_subset, (nn+1)*img_per_subset) for nn in np.where(subset_lb==subset_idx)[0]])
+subset_ls = subset_ls.astype(int)
+print('subset images number : {0}'.format(len(subset_ls)))
+
+
 extractor = FeatureExtractor(cache_folder=model_cache_folder, which_net='vgg16', which_layer=VC['layer'], which_snapshot=0)
 
 res = np.zeros((featDim, 0))
 loc_set = np.zeros((5, 0))
 
-for ii in range(img_num):
-    img = cv2.imread(os.path.join(Dict['file_dir'], image_path[ii]))
+# for ii,iid in enumerate(range(img_num)):
+for ii,iid in enumerate(subset_ls):
+    img = cv2.imread(os.path.join(Dict['file_dir'], image_path[iid]))
     # img = cv2.resize(img, (scale_size, scale_size))
     img = myresize(img, scale_size, 'short')
     
@@ -48,11 +57,14 @@ for ii in range(img_num):
         assert (hi <= img.shape[0] - Arf)
         assert (wi >= 0)
         assert (wi <= img.shape[1] - Arf)
-        loc_set = np.column_stack((loc_set, [ii, hi, wi, hi+Arf, wi+Arf]))
+        loc_set = np.column_stack((loc_set, [iid, hi, wi, hi+Arf, wi+Arf]))
     
-    if (ii + 1) % check_num == 0 or ii == img_num - 1:
-        print('saving batch {0}/{1}'.format(ii//check_num+1, math.ceil(img_num/check_num)))
-        fnm = Dict['cache_path']+str(ii//check_num)+'.pickle'
+    if (ii + 1) % check_num == 0 or ii == len(subset_ls) - 1:
+    # if (ii + 1) % check_num == 0 or ii == img_num - 1:
+        # print('saving batch {0}/{1}'.format(ii//check_num+1, math.ceil(img_num/check_num)))
+        print('saving batch {0}/{1}'.format(ii//check_num+1, math.ceil(len(subset_ls)/check_num)))
+        fnm = Dict['cache_path_sub']+'{}_set{}.pickle'.format(ii//check_num, subset_idx)
+        # fnm = Dict['cache_path']+'{}.pickle'.format(ii//check_num)
         with open(fnm, 'wb') as fh:
             pickle.dump([res, loc_set], fh)
         

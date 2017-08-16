@@ -15,6 +15,10 @@ class vMFMM:
     def __init__(self, cls_num, init_method = 'random', tmp_dir = '/export/home/qliu24/tmp/vMFMM/'):
         self.cls_num = cls_num
         self.init_method = init_method
+        
+        if not os.path.exists(tmp_dir):
+            os.makedirs(tmp_dir)
+            
         self.tmp_file = os.path.join(tmp_dir, str(date.today())+'.pickle')
         
         
@@ -37,7 +41,10 @@ class vMFMM:
             centers = []
             centers_i = []
             
-            rdn_index = np.random.choice(self.n, size=(100000,), replace=False)
+            if self.n > 100000:
+                rdn_index = np.random.choice(self.n, size=(100000,), replace=False)
+            else:
+                rdn_index = np.array(range(self.n), dtype=int)
             
             cos_dis = 1-np.dot(self.features[rdn_index], self.features[rdn_index].T)
             print('finish cos_dis')
@@ -113,7 +120,7 @@ class vMFMM:
         # fast version, requires more memory
         # self.mu = np.sum(np.tile(self.features.reshape(self.n,1,self.d),(1,self.cls_num,1))*self.p.reshape(self.n,self.cls_num,1),axis=0)/np.sum(self.p, axis=0).reshape(-1,1)
         
-        d_cut = 43
+        d_cut = 260
         bnum = int(math.ceil(self.d/d_cut))
         
         for dd_i in range(bnum):

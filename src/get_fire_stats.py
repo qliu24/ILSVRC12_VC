@@ -35,13 +35,15 @@ def get_fire_stats(idx, magic_thh, centers):
     return(np.mean(vc_fire_cnt), np.mean(vc_fire_empty))
 
 
+subset_idx = 3
 cnt_ls = []
 empty_ls = []
-with open(Dict['Dictionary'], 'rb') as fh:
+with open(Dict['Dictionary_sub'].format(VC['num'], subset_idx), 'rb') as fh:
         _, centers, _ = pickle.load(fh)
         
-for idx in range(127):
-    cnt, empty = get_fire_stats(idx, 0.47, centers)
+subset_ls = np.where(subset_lb==subset_idx)[0]
+for idx in subset_ls:
+    cnt, empty = get_fire_stats(idx, 0.49, centers)
     cnt_ls.append(cnt)
     empty_ls.append(empty)
     

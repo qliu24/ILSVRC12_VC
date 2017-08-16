@@ -98,6 +98,7 @@ def vc_dis_paral(inpar):
         
     return (rst1, rst2)
 
+
 def vc_dis_paral_full(inpar):
     inst_ls, inst2 = inpar
     rst1 = np.ones(len(inst_ls))

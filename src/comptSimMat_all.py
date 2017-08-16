@@ -4,42 +4,24 @@ from vcdist_funcs import *
 from config_voting_ILSVRC12 import *
 import time
 
-np.random.seed(0)
-subset_idx = 0
-subset_ls = np.where(subset_lb==subset_idx)[0]
-
 paral_num = 30
-inst_per_cat = 45
-savename = os.path.join(Feat['cache_dir'],'simmat_mthrh048_set{}.pickle'.format(subset_idx))
-magic_thh = 0.48
+inst_per_cat = 30
+savename = os.path.join(Feat['cache_dir'],'simmat_mthrh047.pickle')
+magic_thh = 0.47
 
-layer_feature = []
-for ii in subset_ls:
-    print(ii, end=' ',flush=True)
-    fname = os.path.join(Feat['cache_dir'], '{}_feat_{}.pickle'.format(VC['layer'], ii))
-    with open(fname, 'rb') as fh:
-        layer_feature_i = pickle.load(fh)
-        
-    # idx_sl = np.random.permutation(len(layer_feature_i))[0:inst_per_cat]
-    # layer_feature += [layer_feature_i[idd] for idd in idx_sl]
-    layer_feature_i = layer_feature_i[0:inst_per_cat]
-    layer_feature += layer_feature_i
-    
-print('')
-'''
+
 fname = os.path.join(Feat['cache_dir'], '{}_feat_all_30PerObj.pickle'.format(VC['layer']))
 with open(fname, 'rb') as fh:
-    layer_feature = pickle.load(fh)
+    layer_feature, _ = pickle.load(fh)
     
-'''
 
 N = len(layer_feature)
 print('total number of instances {0}'.format(N))
 
-# N = 210
+# N = 100
 # layer_feature = layer_feature[0:N]
 
-with open(Dict['Dictionary_sub'].format(VC['num_sub'][subset_idx], subset_idx), 'rb') as fh:
+with open(Dict['Dictionary'], 'rb') as fh:
     _, centers, _ = pickle.load(fh)
 
 r_set = [None for nn in range(N)]

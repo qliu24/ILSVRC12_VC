@@ -2,7 +2,10 @@ import pickle
 import numpy as np
 import cv2
 
-fname='/export/home/qliu24/ILSVRC12_VC/dictionary/dictionary_ILSVRC12_VGG16_pool4_K512_vMFMM30_example.pickle'
+subset_idx=0
+VC=dict()
+VC['num_sub'] = [512,200,200,200]
+fname='/export/home/qliu24/ILSVRC12_VC/dictionary/dictionary_ILSVRC12_VGG16_pool4_K{}_vMFMM30_set{}_example.pickle'.format(VC['num_sub'][subset_idx], subset_idx)
 with open(fname,'rb') as fh:
     example = pickle.load(fh)
 
@@ -22,6 +25,6 @@ for ii in range(len(example)):
         cnum = 10+bb*(Arf+10)
         big_img[rnum:rnum+Arf, cnum:cnum+Arf, :] = example[ii][:,iis].reshape(Arf,Arf,3).astype('uint8')
 
-    fname = '/export/home/qliu24/ILSVRC12_VC/dictionary/ILSVRC12_K512/example_K' + str(ii) + '.png'
+    fname = '/export/home/qliu24/ILSVRC12_VC/dictionary/ILSVRC12_K{}_set{}/example_K'.format(VC['num_sub'][subset_idx], subset_idx) + str(ii) + '.png'
     cv2.imwrite(fname, big_img)
 
